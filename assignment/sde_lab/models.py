@@ -62,21 +62,15 @@ class Vasicek:
         self.sigma = sigma
 
     def drift(self, x, t):
-        # TODO: mean reversion kappa * (theta - x)
-        raise NotImplementedError("Step 4: Vasicek.drift")
+        return self.kappa * (self.theta - x)
 
     def diffusion(self, x, t):
-        # TODO: constant sigma — but must return an ARRAY the same shape
-        # as x (hint: np.ones_like), or the schemes break.
-        raise NotImplementedError("Step 4: Vasicek.diffusion")
-
+        return self.sigma * np.ones_like(x)
     def diffusion_dx(self, x, t):
-        # TODO: derivative of a constant...same shape remark as above.
-        raise NotImplementedError("Step 4: Vasicek.diffusion_dx")
-
+        return np.zeros_like(x)
+    
     def exact_mean(self, r0, t):
-        # TODO: formula in the class docstring
-        raise NotImplementedError("Step 4: Vasicek.exact_mean")
+        return self.theta + (r0 - self.theta) * np.exp(-self.kappa * t)
 
     def exact_var(self, t):
         # TODO: formula in the class docstring

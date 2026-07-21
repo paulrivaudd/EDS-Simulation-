@@ -68,6 +68,22 @@ def milstein(x0, drift, diffusion, diffusion_dx, T, n_steps, n_paths,
     -------
     ndarray of shape (n_paths, n_steps + 1).
 
-    TODO: same structure as euler_maruyama, with the extra correction term.
+    
     """
-    raise NotImplementedError("Step 2: implement milstein")
+    dt = T / n_steps
+    if dW is None:
+        if rng is None:
+            rng = np.random.default_rng()
+        dW = _brownian_increments(rng, n_paths, n_steps, dt)
+    X = np.empty((n_paths, n_steps + 1))
+    X[:, 0] = x0
+    for n in range(n_steps):
+        t = n * dt
+        Xn = X[:, n]
+        dWn = dW[:, n]
+        b = diffusion(Xn, t)
+        b_dx = diffusion_dx(Xn, t)
+        X[:, n + 1] = (Xn + drift(Xn, t) * dt + b * dWn + 0.5 * b * b_dx * (dWn**2 - dt))
+
+    return X
+
